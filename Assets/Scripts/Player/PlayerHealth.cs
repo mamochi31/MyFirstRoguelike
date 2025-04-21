@@ -4,7 +4,7 @@ using System;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public int maxHP = 5;
+    public int maxHP = 100;
     public int currentHP;
 
     public UnityEvent OnPlayerDeath = new();
@@ -18,29 +18,9 @@ public class PlayerHealth : MonoBehaviour
         OnHPChanged?.Invoke(currentHP, maxHP);
     }
 
-    // public void TakeDamage(int damage)
-    // {
-    //     currentHP -= damage;
-    //     currentHP = Mathf.Max(0, currentHP);
-    //     OnHPChanged?.Invoke(currentHP, maxHP); // ← UIに通知
-
-    //     if (currentHP == 0)
-    //     {
-    //         // GameManager にプレイヤー撃破を通知
-    //         if (GameManager.Instance != null)
-    //         {
-    //             GameManager.Instance.TriggerGameOver();
-    //         }
-    //     }
-    // }
-
-    public void TakeDamage(int damage)
+    public void ApplyCurrentHP(int hp)
     {
-        currentHP -= damage;
-        if (currentHP <= 0)
-        {
-            OnPlayerDeath.Invoke(); // 🔥 GameManager などへ通知
-        }
+        currentHP = hp;
     }
 
     public void SetHP(int newHP)

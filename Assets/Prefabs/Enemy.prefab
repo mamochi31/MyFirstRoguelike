@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5086164045622357544}
   - component: {fileID: 8818671768906037191}
   - component: {fileID: -8708580224997888616}
+  - component: {fileID: 8032823450250628776}
   m_Layer: 3
   m_Name: Enemy
   m_TagString: Enemy
@@ -176,11 +177,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6adcea2c9e7b1e4aa5577dcf81675ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
   moveSpeed: 1.5
   chaseRange: 5
-  attackRange: 1
-  attackCooldown: 1.5
 --- !u!114 &-8708580224997888616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,5 +191,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5df8200423d2194896150fe1ffd279b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 1
+  maxHP: 10
+  currentHP: 0
   isBoss: 0
+--- !u!114 &8032823450250628776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6213250451982975213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5f5743f4a2fe014595b80eee9594699, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHP: 10
+  currentHP: 10
+  playerHealth: {fileID: 0}
+  hpSlider: {fileID: 0}
+  hpText: {fileID: 0}

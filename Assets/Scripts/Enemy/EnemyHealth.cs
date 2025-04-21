@@ -6,7 +6,7 @@ using UnityEngine;
 /// </summary>
 public class EnemyHealth : MonoBehaviour
 {
-    public int maxHP = 3;                    // 最大HP
+    public int maxHP = 5;                  // 最大HP
     [SerializeField] public int currentHP;   // 現在のHP
     public int CurrentHP => currentHP;
 
@@ -19,16 +19,11 @@ public class EnemyHealth : MonoBehaviour
     }
 
     /// <summary>
-    /// ダメージを受けたときの処理
+    /// 現在のHPを反映
     /// </summary>
-    public void TakeDamage(int damage)
+    public void ApplyCurrentHP(int hp)
     {
-        currentHP -= damage;
-
-        if (currentHP <= 0)
-        {
-            Die();
-        }
+        currentHP = hp;
     }
 
     /// <summary>

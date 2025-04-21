@@ -1,94 +1,115 @@
 using UnityEngine;
-using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using TMPro;
+using System.Collections;
+using System.Collections.Generic;
 
 public class BattleManager : MonoBehaviour
 {
-    public GameObject playerPrefab;
-    public GameObject enemyPrefab;
+    public static GameObject playerUnit;
+    public static GameObject enemyUnit;
 
-    private GameObject player;
-    private GameObject enemy;
+    private BattleCharacter playerChar;
+    private BattleCharacter enemyChar;
 
-    public float attackInterval = 1.5f;  // 攻撃の間隔
-    private float timer = 0f;
+    private static List<GameObject> dungeonSceneRoots = new();
 
-    public static BattleManager Instance { get; private set; }
-
-    public static GameObject PlayerInBattle;
-    public static GameObject EnemyInBattle;
-
-    private void Awake()
-    {
-        if (Instance == null)
-            Instance = this;
-        else
-            Destroy(gameObject);
-    }
-
-    void Start()
-    {
-        // プレイヤーと敵を生成（位置は固定）
-        player = Instantiate(playerPrefab, new Vector3(-2, 0, 0), Quaternion.identity);
-        enemy = Instantiate(enemyPrefab, new Vector3(2, 0, 0), Quaternion.identity);
-    }
-
-    void Update()
-    {
-        if (player == null || enemy == null) return;
-
-        timer += Time.deltaTime;
-        if (timer >= attackInterval)
-        {
-            timer = 0f;
-            PerformAutoBattle();
-        }
-    }
-
-    void PerformAutoBattle()
-    {
-        // プレイヤーが先に攻撃
-        EnemyHealth enemyHP = enemy.GetComponent<EnemyHealth>();
-        if (enemyHP != null)
-        {
-            enemyHP.TakeDamage(1);
-            if (enemyHP.CurrentHP <= 0)
-            {
-                EndBattle(true);
-                return;
-            }
-        }
-
-        // 次に敵が攻撃
-        PlayerHealth playerHP = player.GetComponent<PlayerHealth>();
-        if (playerHP != null)
-        {
-            playerHP.TakeDamage(1);
-            if (playerHP.currentHP <= 0)
-            {
-                EndBattle(false);
-            }
-        }
-    }
+    public static bool IsInBattle { get; private set; } = false;
 
     public static void StartBattle(GameObject player, GameObject enemy)
     {
-        PlayerInBattle = player;
-        EnemyInBattle = enemy;
+        if (IsInBattle) return; // 二重呼び出し防止
+        IsInBattle = true;
 
-        // シーン間で削除されないように保持
-        Object.DontDestroyOnLoad(player);
-        Object.DontDestroyOnLoad(enemy);
+        playerUnit = player;
+        enemyUnit = enemy;
 
-        // シーンをバトル用に切り替える
-        SceneManager.LoadScene("BattleScene");
+        // ダンジョンシーンのルートオブジェクトを非アクティブ化
+        Scene dungeonScene = SceneManager.GetSceneByName("DungeonScene");
+        dungeonSceneRoots.Clear();
+
+        foreach (GameObject root in dungeonScene.GetRootGameObjects())
+        {
+            dungeonSceneRoots.Add(root);
+            root.SetActive(false);
+        }
+
+        // BattleScene を Additive 読み込み
+        SceneManager.LoadScene("BattleScene", LoadSceneMode.Additive);
     }
 
-    void EndBattle(bool playerWon)
+    private IEnumerator Start()
+    {
+        yield return null; // シーン遷移直後の安全待ち
+
+        // アクティブシーンをバトルに切り替え
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName("BattleScene"));
+
+        SetupCharacters();
+        StartCoroutine(RunAutoBattle(playerChar, enemyChar));
+    }
+
+    private void SetupCharacters()
+    {
+        playerChar = BattleManager.playerUnit.GetComponentInChildren<BattleCharacter>();
+        enemyChar = BattleManager.enemyUnit.GetComponentInChildren<BattleCharacter>();
+
+        // プレイヤーのHP UIを紐づける
+        playerChar.hpSlider = GameObject.Find("PlayerHPBar")?.GetComponent<Slider>();
+        playerChar.hpText = GameObject.Find("PlayerHPText")?.GetComponent<TextMeshProUGUI>();
+
+        // 敵のHP UIを紐づける
+        enemyChar.hpSlider = GameObject.Find("EnemyHPBar")?.GetComponent<Slider>();
+        enemyChar.hpText = GameObject.Find("EnemyHPText")?.GetComponent<TextMeshProUGUI>();
+
+        // HPを初期表示
+        playerChar.UpdateHPUI();
+        enemyChar.UpdateHPUI();
+    }
+
+    private IEnumerator RunAutoBattle(BattleCharacter playerChar, BattleCharacter enemyChar)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(1f);
+            enemyChar.TakeDamage(1);
+            // enemyChar.enemyHealth.ApplyCurrentHP(enemyHp);
+
+            if (enemyChar.currentHP <= 0)
+            {
+                EndBattle(true);
+                yield break;
+            }
+
+            yield return new WaitForSeconds(1f);
+            playerChar.TakeDamage(1);
+            playerChar.playerHealth.ApplyCurrentHP(playerChar.currentHP);
+
+            if (playerChar.currentHP <= 0)
+            {
+                EndBattle(false);
+                yield break;
+            }
+        }
+    }
+
+    private void EndBattle(bool playerWon)
     {
         Debug.Log(playerWon ? "勝利！" : "敗北...");
-        // あとで UI を表示したり、シーン遷移も追加する予定
-        SceneManager.LoadScene("MainScene"); // 戻る例
-    }
+        IsInBattle = false;
 
+        Destroy(enemyUnit);
+
+        // BattleScene を閉じる
+        SceneManager.UnloadSceneAsync("BattleScene");
+
+        // DungeonScene を再アクティブ化
+        foreach (GameObject root in dungeonSceneRoots)
+        {
+            root.SetActive(true);
+        }
+
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName("DungeonScene"));
+    }
 }

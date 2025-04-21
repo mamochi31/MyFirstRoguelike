@@ -62,11 +62,11 @@ public class GameManager : MonoBehaviour
     {
         // マップ生成が完了するまで待機
         yield return new WaitUntil(() =>
-            MapGenerator.Instance != null && MapGenerator.Instance.IsGenerated
+            MapGeneratorTree.Instance != null && MapGeneratorTree.Instance.IsGenerated
         );
 
         // プレイヤーを生成して取得
-        player = MapGenerator.Instance.SpawnPlayer();
+        player = MapGeneratorTree.Instance.Player;
         if (player != null)
         {
             var health = player.GetComponent<PlayerHealth>();
@@ -81,29 +81,29 @@ public class GameManager : MonoBehaviour
 
         }
 
-        // ボスを生成して取得
-        GameObject boss = MapGenerator.Instance.SpawnBoss();
-        if (boss == null)
-        {
-            Debug.Log("ボスが生成できませんでした");
-        }
+        // // ボスを生成して取得
+        // GameObject boss = MapGenerator.Instance.SpawnBoss();
+        // if (boss == null)
+        // {
+        //     Debug.Log("ボスが生成できませんでした");
+        // }
 
-        // 敵を生成して数を取得
-        normalEnemyCount = MapGenerator.Instance.SpawnEnemies();
-        if (normalEnemyCount == 0)
-        {
-            Debug.Log("敵が生成できませんでした");
-        }
+        // // 敵を生成して数を取得
+        // normalEnemyCount = MapGenerator.Instance.SpawnEnemies();
+        // if (normalEnemyCount == 0)
+        // {
+        //     Debug.Log("敵が生成できませんでした");
+        // }
 
-        // ミニマップを初期化
-        if (miniMapController != null && player != null)
-        {
-            miniMapController.Initialize(MapGenerator.Instance.map, player);
-        }
-        else
-        {
-            Debug.Log("ミニマップが生成できませんでした");
-        }
+        // // ミニマップを初期化
+        // if (miniMapController != null && player != null)
+        // {
+        //     miniMapController.Initialize(MapGenerator.Instance.map, player);
+        // }
+        // else
+        // {
+        //     Debug.Log("ミニマップが生成できませんでした");
+        // }
     }
 
     /// <summary>

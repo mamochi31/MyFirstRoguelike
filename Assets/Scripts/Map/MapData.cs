@@ -14,11 +14,16 @@ public class MapData
 
     public TileType[,] tiles;
 
+    public int Width { get; private set; }
+    public int Height { get; private set; }
+
     /// <summary>
     /// 幅・高さを指定して初期化
     /// </summary>
     public MapData(int width, int height)
     {
+        Width = width;
+        Height = height;
         tiles = new TileType[width, height];
     }
 
@@ -35,18 +40,20 @@ public class MapData
     /// </summary>
     public void SetTile(int x, int y, TileType type)
     {
-        tiles[x, y] = type;
+        if (x >= 0 && x < Width && y >= 0 && y < Height)
+            tiles[x, y] = type;
+
     }
 
     /// <summary>
     /// マップの幅
     /// </summary>
-    public int Width => tiles.GetLength(0);
+    // public int Width => tiles.GetLength(0);
 
     /// <summary>
     /// マップの高さ
     /// </summary>
-    public int Height => tiles.GetLength(1);
+    // public int Height => tiles.GetLength(1);
 
     /// <summary>
     /// 全体を壁で初期化
