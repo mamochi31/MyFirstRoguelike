@@ -11,12 +11,14 @@ public class MapGeneratorTree : MonoBehaviour
     public static MapGeneratorTree Instance { get; private set; }
     // 生成したプレイヤー
     public GameObject Player { get; private set; }
+    // 生成したマップ
+    public RoomTreeGenerator TreeGenerator { get; private set; }
     // マップ生成完了フラグ
     public bool IsGenerated { get; private set; } = false;
 
     [Header("マップサイズ・タイル")]
-    public int mapWidth = 100;
-    public int mapHeight = 100;
+    public int mapWidth = 500;
+    public int mapHeight = 500;
     public Tilemap floorTilemap;
     public TileBase floorTile;
 
@@ -24,6 +26,9 @@ public class MapGeneratorTree : MonoBehaviour
     public GameObject playerPrefab;
     public GameObject enemyPrefab;
     public GameObject bossPrefab;
+
+    [Header("UI")]
+    public RoomUIMapGenerator uiMapGenerator;
 
     private MapData map;
     private Dictionary<MapData.TileType, TileBase> tileMap;
@@ -56,21 +61,24 @@ public class MapGeneratorTree : MonoBehaviour
     public void GenerateDungeonFromTree()
     {
         // ツリー構造のルートノードを生成
-        RoomTreeGenerator generator = new RoomTreeGenerator();
-        generator.GenerateTree();
+        TreeGenerator = new RoomTreeGenerator();
+        TreeGenerator.GenerateTree();
 
         // マップデータ初期化
         map = new MapData(mapWidth, mapHeight);
         map.FillWithWalls();
 
         // 部屋と通路の描画
-        DrawRoomTree(generator.Root);
+        DrawRoomTree(TreeGenerator.Root);
 
         // タイルマップを描画
         DrawTilemapFromMapData();
 
         // キャラクター配置
-        SpawnCharacters(generator.Root);
+        SpawnCharacters(TreeGenerator.Root);
+
+        // 移動用矢印配置
+        uiMapGenerator.GenerateUIFromTree(TreeGenerator.Root);
     }
 
     /// <summary>
@@ -94,12 +102,14 @@ public class MapGeneratorTree : MonoBehaviour
     /// </summary>
     private void DrawRoom(RoomNode node)
     {
-        int size = 5; // 各部屋のサイズ（正方形）
-        Vector2Int origin = new Vector2Int(node.X * 10, node.Y * 10); // 描画位置を分離
+        // 各部屋のサイズ
+        int xSize = 14;
+        int ySize = 8;
+        Vector2Int origin = new Vector2Int(node.X * 20, node.Y * 12); // 描画位置を分離
 
-        for (int x = 0; x < size; x++)
+        for (int x = 0; x < xSize; x++)
         {
-            for (int y = 0; y < size; y++)
+            for (int y = 0; y < ySize; y++)
             {
                 int gx = origin.x + x;
                 int gy = origin.y + y;
@@ -108,7 +118,7 @@ public class MapGeneratorTree : MonoBehaviour
         }
 
         // 部屋の中央を記録（通路接続・キャラ配置用）
-        node.Position = new Vector2Int(origin.x + size / 2, origin.y + size / 2);
+        node.Position = new Vector2Int(origin.x + xSize / 2, origin.y + ySize / 2);
     }
 
     /// <summary>
@@ -116,24 +126,37 @@ public class MapGeneratorTree : MonoBehaviour
     /// </summary>
     private void CreateCorridor(RoomNode from, RoomNode to)
     {
-        Vector2Int a = from.Position;
-        Vector2Int b = to.Position;
+        // 2部屋の座標を取得
+        Vector2Int fromP = from.Position;
+        Vector2Int toP = to.Position;
 
-        // スタート部屋のみ通路生成のTOの中心を基準にする
-        bool isStartRoom = from.Type == RoomNodeType.Start;
-        int horizonPosition = isStartRoom ? b.y : a.y;
-        int verticalPosition = isStartRoom ? a.x : b.x;
+        // 分岐部屋のみTOの中心を基準にする
+        bool isForkRoom = from.Type == RoomNodeType.Start;
+        int midY = isForkRoom ? toP.y : fromP.y;
+        int midX = isForkRoom ? fromP.x : toP.x;
+        // TOのY座標がFROMより下の場合
+        bool isUnder = toP.y < fromP.y;
+        if (isUnder) midY--;
 
-        // 水平方向の通路
-        for (int x = Mathf.Min(a.x, b.x); x <= Mathf.Max(a.x, b.x); x++)
+        // 水平方向の通路（左右に敷く）
+        int minX = Mathf.Min(fromP.x, toP.x);
+        int maxX = Mathf.Max(fromP.x, toP.x);
+        for (int x = minX; x <= maxX; x++)
         {
-            map.SetTile(x, horizonPosition, MapData.TileType.Floor);
+            map.SetTile(x, midY, MapData.TileType.Floor);
+            map.SetTile(x, midY + (isUnder ? 1 : -1), MapData.TileType.Floor);
         }
 
-        // 垂直方向の通路
-        for (int y = Mathf.Min(a.y, b.y); y <= Mathf.Max(a.y, b.y); y++)
+        // 垂直方向の通路（上下に敷く）
+        int minY = Mathf.Min(fromP.y, toP.y);
+        int maxY = Mathf.Max(fromP.y, toP.y);
+        for (int y = minY; y <= maxY; y++)
         {
-            map.SetTile(verticalPosition, y, MapData.TileType.Floor);
+            map.SetTile(midX, y, MapData.TileType.Floor);
+            map.SetTile(midX - 1, y, MapData.TileType.Floor);
+
+            if (isUnder)
+                map.SetTile(midX - 1, y - 1, MapData.TileType.Floor);
         }
     }
 
@@ -168,7 +191,7 @@ public class MapGeneratorTree : MonoBehaviour
         foreach (var node in root.Traverse())
         {
             // タイル座標 → ワールド座標に変換（中心に配置）
-            Vector3 worldPos = floorTilemap.CellToWorld((Vector3Int)node.Position) + new Vector3(0.5f, 0.5f, 0);
+            Vector3 worldPos = floorTilemap.CellToWorld((Vector3Int)node.Position);
 
             switch (node.Type)
             {

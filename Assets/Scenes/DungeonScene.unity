@@ -505,6 +505,7 @@ GameObject:
   - component: {fileID: 60267451}
   - component: {fileID: 60267450}
   - component: {fileID: 60267449}
+  - component: {fileID: 60267453}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -596,8 +597,16 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_TargetDisplay: 0
+--- !u!222 &60267453
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 60267447}
+  m_CullTransparentMesh: 1
 --- !u!1 &67957739
 GameObject:
   m_ObjectHideFlags: 0
@@ -1848,6 +1857,53 @@ MonoBehaviour:
   gameOverPanel: {fileID: 453207189}
   player: {fileID: 0}
   miniMapController: {fileID: 2014647652}
+--- !u!1 &1486212353
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1486212355}
+  - component: {fileID: 1486212354}
+  m_Layer: 0
+  m_Name: RoomUIMapGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1486212354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1486212353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30690314e9409fd469dfe51f88b8c5a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rootCanvas: {fileID: 60267448}
+  roomButtonPrefab: {fileID: 2363070423631888703, guid: 13d62e1e7ef136143bac48c41d6a8a0f, type: 3}
+  spacing: 100
+--- !u!4 &1486212355
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1486212353}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1011.662, y: 539.2446, z: 8.839289}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1686310149
 GameObject:
   m_ObjectHideFlags: 0
@@ -1858,7 +1914,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1686310152}
   - component: {fileID: 1686310151}
-  - component: {fileID: 1686310153}
+  - component: {fileID: 1686310154}
   m_Layer: 0
   m_Name: MapGenerator
   m_TagString: Untagged
@@ -1874,8 +1930,8 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1686310149}
-  m_BodyType: 0
-  m_Simulated: 1
+  m_BodyType: 2
+  m_Simulated: 0
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
@@ -1902,13 +1958,13 @@ Transform:
   m_GameObject: {fileID: 1686310149}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 27.612, y: 11.658, z: 0.017274978}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 6.2867, y: 2.8859, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1686310153
+--- !u!114 &1686310154
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1917,23 +1973,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 1686310149}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4e58317f6e4e2f4585b3eaef0b90884, type: 3}
+  m_Script: {fileID: 11500000, guid: a7e9376fbd9aeb64dbf212c35edab358, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 40
-  height: 40
-  maxRooms: 10
-  minRoomSize: 5
-  maxRoomSize: 7
+  mapWidth: 500
+  mapHeight: 500
   floorTilemap: {fileID: 759392029}
-  wallTilemap: {fileID: 39563918}
+  floorTile: {fileID: 11400000, guid: fa36b100d0375a84fa192c04b8468f0e, type: 2}
   playerPrefab: {fileID: 4242789731883174979, guid: d0294da0ff2de2740bddf461c9caf1a5, type: 3}
   enemyPrefab: {fileID: 6213250451982975213, guid: 2a842e15cf858204fb69904fa52f59dc, type: 3}
   bossPrefab: {fileID: 6213250451982975213, guid: 38de955b089c04d48b161e7e6fb8ad1f, type: 3}
-  floorPositions: []
-  floorTile: {fileID: 11400000, guid: fa36b100d0375a84fa192c04b8468f0e, type: 2}
-  corridorTile: {fileID: 11400000, guid: 2144946d4a6d2244a8c3ceeddf40a9a6, type: 2}
-  wallTile: {fileID: 11400000, guid: bb9ff820c3710e5428ebb15d71d3b251, type: 2}
+  uiMapGenerator: {fileID: 1486212354}
 --- !u!1 &1788298424
 GameObject:
   m_ObjectHideFlags: 0
@@ -2473,3 +2523,4 @@ SceneRoots:
   - {fileID: 1425964359}
   - {fileID: 1686310152}
   - {fileID: 60267448}
+  - {fileID: 1486212355}

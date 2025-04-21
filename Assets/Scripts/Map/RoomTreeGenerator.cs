@@ -22,8 +22,8 @@ public class RoomTreeGenerator
 
         // ステップ1：スタートから各ルートを再帰生成（ボスはまだ作らない）
         var child1 = new RoomNode(GetRandomRoomType(), 1, centerY - 1);
-        var child2 = new RoomNode(GetRandomRoomType(), 1, centerY + 1);
-        var child3 = new RoomNode(GetRandomRoomType(), 1, centerY);
+        var child2 = new RoomNode(GetRandomRoomType(), 1, centerY);
+        var child3 = new RoomNode(GetRandomRoomType(), 1, centerY + 1);
 
         Root.AddChild(child1);
         Root.AddChild(child2);

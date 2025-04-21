@@ -10,8 +10,10 @@ using System.Collections;
 /// </summary>
 public class GameManager : MonoBehaviour
 {
-    // ✅ Singleton によるインスタンスアクセス
+    // インスタンス
     public static GameManager Instance { get; private set; }
+    // 現在地
+    public RoomNode CurrentRoom { get; private set; }
 
     [Header("ゲームクリア UI")]
     [SerializeField] private GameObject clearPanel;               // クリア時に表示するパネル
@@ -29,9 +31,6 @@ public class GameManager : MonoBehaviour
     private int normalEnemyCount = 0;           // 通常敵の残数
     private bool bossDefeated = false;          // ボス撃破フラグ
     private bool isGameOver = false;            // ゲームオーバーフラグ
-
-
-
 
     void Awake()
     {
@@ -65,7 +64,7 @@ public class GameManager : MonoBehaviour
             MapGeneratorTree.Instance != null && MapGeneratorTree.Instance.IsGenerated
         );
 
-        // プレイヤーを生成して取得
+        // プレイヤーを取得
         player = MapGeneratorTree.Instance.Player;
         if (player != null)
         {
@@ -80,6 +79,9 @@ public class GameManager : MonoBehaviour
             Debug.Log("プレイヤーが生成できませんでした");
 
         }
+
+        // スタート部屋を取得
+        CurrentRoom = MapGeneratorTree.Instance.TreeGenerator.Root;
 
         // // ボスを生成して取得
         // GameObject boss = MapGenerator.Instance.SpawnBoss();
@@ -197,5 +199,10 @@ public class GameManager : MonoBehaviour
         isGameOver = false;
         Time.timeScale = 1f; // 一時停止を解除（必要な場合）
         SceneManager.LoadScene(SceneManager.GetActiveScene().name); // 現在のシーンを再読み込み
+    }
+
+    public void MoveToRoom(RoomNode to)
+    {
+        Debug.Log($"Clicked: {to.Type} at ({to.Position.x}, {to.Position.y})");
     }
 }

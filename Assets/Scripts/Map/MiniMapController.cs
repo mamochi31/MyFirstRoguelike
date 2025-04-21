@@ -53,7 +53,7 @@ public class MiniMapController : MonoBehaviour
         if (mapData == null || player == null) return;
 
         // プレイヤーが動いたときにミニマップを更新
-        Vector3Int current = MapGenerator.Instance.floorTilemap.WorldToCell(player.transform.position);
+        Vector3Int current = MapGeneratorTree.Instance.floorTilemap.WorldToCell(player.transform.position);
         if (current != lastPlayerCell)
         {
             RedrawMap();
@@ -75,7 +75,7 @@ public class MiniMapController : MonoBehaviour
 
         // プレイヤーの位置を描画（マップ上座標に変換）
         Vector3 world = player.transform.position;
-        Vector3Int cell = MapGenerator.Instance.floorTilemap.WorldToCell(world);
+        Vector3Int cell = MapGeneratorTree.Instance.floorTilemap.WorldToCell(world);
         FillTile(cell.x, cell.y, playerColor);
 
         texture.Apply();
