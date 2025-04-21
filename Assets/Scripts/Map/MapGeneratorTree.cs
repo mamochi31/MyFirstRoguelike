@@ -119,16 +119,21 @@ public class MapGeneratorTree : MonoBehaviour
         Vector2Int a = from.Position;
         Vector2Int b = to.Position;
 
-        // 垂直方向の通路
-        for (int y = Mathf.Min(a.y, b.y); y <= Mathf.Max(a.y, b.y); y++)
-        {
-            map.SetTile(b.x, y, MapData.TileType.Floor);
-        }
+        // スタート部屋のみ通路生成のTOの中心を基準にする
+        bool isStartRoom = from.Type == RoomNodeType.Start;
+        int horizonPosition = isStartRoom ? b.y : a.y;
+        int verticalPosition = isStartRoom ? a.x : b.x;
 
         // 水平方向の通路
         for (int x = Mathf.Min(a.x, b.x); x <= Mathf.Max(a.x, b.x); x++)
         {
-            map.SetTile(x, a.y, MapData.TileType.Floor);
+            map.SetTile(x, horizonPosition, MapData.TileType.Floor);
+        }
+
+        // 垂直方向の通路
+        for (int y = Mathf.Min(a.y, b.y); y <= Mathf.Max(a.y, b.y); y++)
+        {
+            map.SetTile(verticalPosition, y, MapData.TileType.Floor);
         }
     }
 
@@ -167,22 +172,22 @@ public class MapGeneratorTree : MonoBehaviour
 
             switch (node.Type)
             {
+                // スタート部屋：プレイヤーを1体配置
                 case RoomNodeType.Start:
                     Player = Instantiate(playerPrefab, worldPos, Quaternion.identity);
                     break;
 
+                // ボス部屋：ボスを1体配置
                 case RoomNodeType.Boss:
                     Instantiate(bossPrefab, worldPos, Quaternion.identity);
                     break;
 
+                // 通常部屋：今は何もなし
                 case RoomNodeType.Normal:
+
+                // 戦闘部屋：敵を1体配置
                 case RoomNodeType.Battle:
-                    int count = Random.Range(0, 4);
-                    for (int i = 0; i < count; i++)
-                    {
-                        Vector3 offset = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0);
-                        Instantiate(enemyPrefab, worldPos + offset, Quaternion.identity);
-                    }
+                    Instantiate(enemyPrefab, worldPos, Quaternion.identity);
                     break;
             }
         }
