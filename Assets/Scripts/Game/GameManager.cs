@@ -31,6 +31,8 @@ public class GameManager : MonoBehaviour
     private int normalEnemyCount = 0;           // 通常敵の残数
     private bool bossDefeated = false;          // ボス撃破フラグ
     private bool isGameOver = false;            // ゲームオーバーフラグ
+    public float moveDuration = 2f;           // 移動にかける時間（秒）
+    private Coroutine moveCoroutine = null;
 
     void Awake()
     {
@@ -204,5 +206,62 @@ public class GameManager : MonoBehaviour
     public void MoveToRoom(RoomNode to)
     {
         Debug.Log($"Clicked: {to.Type} at ({to.Position.x}, {to.Position.y})");
+
+        if (player == null || to == null) return;
+
+        // すでに移動中なら中断
+        if (moveCoroutine != null) StopCoroutine(moveCoroutine);
+
+        // タイル座標をワールド座標に変換
+        Vector3 from = player.transform.position;
+        Vector3 targetPos = MapGeneratorTree.Instance.floorTilemap.CellToWorld((Vector3Int)to.Position);
+
+        // 中間点（X固定 or Y固定）
+        Vector3 mid;
+        if (CurrentRoom.Children.Count == 1)
+            mid = new Vector3(targetPos.x, from.y, from.z); // 横→縦
+        else
+            mid = new Vector3(from.x, targetPos.y, from.z); // 縦→横
+
+        // プレイヤーを移動
+        moveCoroutine = StartCoroutine(MoveInTwoSteps(player.transform, mid, targetPos, moveDuration));
+
+        // 状態更新（任意）
+        CurrentRoom = to;
+    }
+
+    /// <summary>
+    /// プレイヤーの移動（中継点あり）
+    /// </summary>
+    private IEnumerator MoveInTwoSteps(Transform player, Vector3 mid, Vector3 end, float totalDuration)
+    {
+        float half = totalDuration / 2f;
+
+        // Step 1: 始点 → 中間点
+        yield return SmoothMoveSegment(player, mid, half);
+
+        // Step 2: 中間点 → 終点
+        yield return SmoothMoveSegment(player, end, half);
+
+        moveCoroutine = null;
+    }
+
+    /// <summary>
+    /// プレイヤーの移動（1区間移動）
+    /// </summary>
+    private IEnumerator SmoothMoveSegment(Transform player, Vector3 end, float duration)
+    {
+        Vector3 start = player.position;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            player.position = Vector3.Lerp(start, end, t);
+            yield return null;
+        }
+
+        player.position = end;
     }
 }

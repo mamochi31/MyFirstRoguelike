@@ -1887,7 +1887,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rootCanvas: {fileID: 60267448}
-  roomButtonPrefab: {fileID: 2363070423631888703, guid: 13d62e1e7ef136143bac48c41d6a8a0f, type: 3}
+  roomButtonPrefab: {fileID: 7123178561601887989, guid: d3ea4273ddcc75749a3484b527cc6ed5, type: 3}
   spacing: 100
 --- !u!4 &1486212355
 Transform:

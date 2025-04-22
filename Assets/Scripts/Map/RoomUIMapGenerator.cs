@@ -27,11 +27,11 @@ public class RoomUIMapGenerator : MonoBehaviour
 
                 // 矢印を生成
                 GameObject btn;
-                if (childY > rootY && node.Children.Count == 3)
+                if (childY > rootY && node.Children.Count > 1)
                 {
                     btn = Instantiate(roomButtonPrefab, new Vector3(rootX, rootY + 4, 0), Quaternion.identity);
                 }
-                else if (childY < rootY && node.Children.Count == 3)
+                else if (childY < rootY && node.Children.Count > 1)
                 {
                     btn = Instantiate(roomButtonPrefab, new Vector3(rootX, rootY - 4, 0), Quaternion.identity);
                     btn.transform.eulerAngles = new Vector3(0, 0, 180);
