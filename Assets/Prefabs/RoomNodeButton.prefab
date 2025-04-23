@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 6356712023920213569}
   - component: {fileID: 2993751331428110979}
   - component: {fileID: -3318420850136385110}
-  m_Layer: 0
-  m_Name: RoomNodeButtonBK
+  m_Layer: 8
+  m_Name: RoomNodeButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

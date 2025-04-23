@@ -99,10 +99,10 @@ public class GameManager : MonoBehaviour
         //     Debug.Log("敵が生成できませんでした");
         // }
 
-        // // ミニマップを初期化
+        // ミニマップを初期化
         // if (miniMapController != null && player != null)
         // {
-        //     miniMapController.Initialize(MapGenerator.Instance.map, player);
+        //     miniMapController.Initialize(MapGeneratorTree.Instance.map, player);
         // }
         // else
         // {

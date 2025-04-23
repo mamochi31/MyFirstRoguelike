@@ -21,6 +21,8 @@ public class MapGeneratorTree : MonoBehaviour
     public int mapHeight = 500;
     public Tilemap floorTilemap;
     public TileBase floorTile;
+    public Tilemap miniMapFloorTilemap;
+    public TileBase miniMapTile;
 
     [Header("プレハブ")]
     public GameObject playerPrefab;
@@ -30,7 +32,7 @@ public class MapGeneratorTree : MonoBehaviour
     [Header("UI")]
     public RoomUIMapGenerator uiMapGenerator;
 
-    private MapData map;
+    public MapData map;
     private Dictionary<MapData.TileType, TileBase> tileMap;
 
     private void Awake()
@@ -177,6 +179,7 @@ public class MapGeneratorTree : MonoBehaviour
                 if (tileMap.TryGetValue(tileType, out TileBase tile))
                 {
                     floorTilemap.SetTile(pos, tile);
+                    miniMapFloorTilemap.SetTile(pos, miniMapTile);
                 }
             }
         }

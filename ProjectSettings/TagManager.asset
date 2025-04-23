@@ -12,11 +12,11 @@ TagManager:
   - Enemy
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Tilemap
+  - MinimapTile
+  - Button
+  - Player
+  - MiniPlayer
   - 
   - 
   - 
@@ -41,6 +41,9 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Tile
+    uniqueID: 3860749671
     locked: 0
   m_RenderingLayers:
   - Default
