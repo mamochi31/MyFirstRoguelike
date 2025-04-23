@@ -34,6 +34,7 @@ public class MapGeneratorTree : MonoBehaviour
 
     public MapData map;
     private Dictionary<MapData.TileType, TileBase> tileMap;
+    private bool hasBoss = false;
 
     private void Awake()
     {
@@ -205,11 +206,16 @@ public class MapGeneratorTree : MonoBehaviour
 
                 // ボス部屋：ボスを1体配置
                 case RoomNodeType.Boss:
-                    Instantiate(bossPrefab, worldPos, Quaternion.identity);
+                    if (!hasBoss)
+                    {
+                        Instantiate(bossPrefab, worldPos, Quaternion.identity);
+                        hasBoss = true;
+                    }
                     break;
 
                 // 通常部屋：今は何もなし
                 case RoomNodeType.Normal:
+                    break;
 
                 // 戦闘部屋：敵を1体配置
                 case RoomNodeType.Battle:

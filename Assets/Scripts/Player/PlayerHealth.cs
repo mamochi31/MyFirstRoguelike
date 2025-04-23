@@ -29,4 +29,11 @@ public class PlayerHealth : MonoBehaviour
         OnHPChanged?.Invoke(currentHP, maxHP);
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Enemy"))
+        {
+            BattleManager.StartBattle(this.gameObject, collision.gameObject);
+        }
+    }
 }

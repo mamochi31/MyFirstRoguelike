@@ -121,6 +121,9 @@ public class BattleManager : MonoBehaviour
         Debug.Log(playerWon ? "勝利！" : "敗北...");
         IsInBattle = false;
 
+        EnemyHealth enemyHealth = BattleManager.enemyUnit.GetComponent<EnemyHealth>();
+        bool isBoss = enemyHealth.isBoss;
+
         Destroy(enemyUnit);
 
         // BattleScene を閉じる
@@ -133,5 +136,10 @@ public class BattleManager : MonoBehaviour
         }
 
         SceneManager.SetActiveScene(SceneManager.GetSceneByName("DungeonScene"));
+
+        if (playerWon && isBoss)
+        {
+            GameManager.Instance.TriggerGameClear();
+        }
     }
 }

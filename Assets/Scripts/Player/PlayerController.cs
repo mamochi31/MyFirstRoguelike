@@ -24,17 +24,4 @@ public class PlayerController : MonoBehaviour
         rb.MovePosition(rb.position + moveInput * moveSpeed * Time.fixedDeltaTime);
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Enemy"))
-        {
-            Debug.Log("敵にぶつかった！");
-            // 例：敵を消す
-            // Destroy(collision.gameObject);
-
-            // または：敵の色を変える
-            collision.gameObject.GetComponent<SpriteRenderer>().color = Color.green;
-        }
-    }
-
 }
