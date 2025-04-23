@@ -7,6 +7,12 @@ using System.Collections.Generic;
 
 public class BattleManager : MonoBehaviour
 {
+    [Header("バトル画面のキャラ画像")]
+    [SerializeField] private Image playerImage;
+    [SerializeField] private Image enemyImage;
+    [SerializeField] private Image playerPanelImage;
+    [SerializeField] private Image enemyPanelImage;
+
     public static GameObject playerUnit;
     public static GameObject enemyUnit;
 
@@ -66,6 +72,22 @@ public class BattleManager : MonoBehaviour
         // HPを初期表示
         playerChar.UpdateHPUI();
         enemyChar.UpdateHPUI();
+
+        // プレイヤーと敵の画像を取得
+        var playerSprite = playerUnit.GetComponent<SpriteRenderer>().sprite;
+        var enemySprite = enemyUnit.GetComponent<SpriteRenderer>().sprite;
+
+        // UIのImageに代入
+        if (playerSprite != null)
+        {
+            playerImage.sprite = playerSprite;
+            playerPanelImage.sprite = playerSprite;
+        }
+        if (enemySprite != null)
+        {
+            enemyImage.sprite = enemySprite;
+            enemyPanelImage.sprite = enemySprite;
+        }
     }
 
     private IEnumerator RunAutoBattle(BattleCharacter playerChar, BattleCharacter enemyChar)
